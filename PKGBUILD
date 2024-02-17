@@ -5,19 +5,18 @@
 # Maintainer : Thomas Baechler <thomas@archlinux.org>
 
 _linuxprefix=linux66
-_kernver="$(cat /usr/src/${_linuxprefix}/version)"
 
-pkgname=$_linuxprefix-nvidia-470xx
+pkgname="${_linuxprefix}-nvidia-470xx"
 pkgdesc="NVIDIA drivers for linux"
 pkgver=470.223.02
 pkgrel=42
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
-groups=("$_linuxprefix-extramodules")
-depends=("$_linuxprefix" "nvidia-utils=$pkgver")
-makedepends=("$_linuxprefix-headers")
-provides=("nvidia=$pkgver" 'NVIDIA-MODULE')
+groups=("${_linuxprefix}-extramodules")
+depends=("${_linuxprefix}" "nvidia-utils=${pkgver}")
+makedepends=("${_linuxprefix}-headers")
+provides=("nvidia=${pkgver}" 'NVIDIA-MODULE')
 options=(!strip)
 _durl="https://us.download.nvidia.com/XFree86/Linux-x86"
 source=("${_durl}_64/${pkgver}/NVIDIA-Linux-x86_64-${pkgver}-no-compat32.run")
@@ -33,12 +32,15 @@ prepare() {
 }
 
 build() {
+    _kernver="$(cat /usr/src/${_linuxprefix}/version)"
 
     cd "${_pkg}"
     make -C kernel SYSSRC=/usr/lib/modules/"${_kernver}/build" module
 }
 
 package() {
+    _kernver="$(cat /usr/src/${_linuxprefix}/version)"
+
     cd "${_pkg}"
     install -Dm 644 kernel/*.ko -t "${pkgdir}/usr/lib/modules/${_kernver}/extramodules/"
 
